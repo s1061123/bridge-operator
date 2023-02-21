@@ -1,0 +1,325 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: bridge-configurations.openshift.io
+spec:
+  group: openshift.io
+  names:
+    plural: bridge-configurations
+    singular: bridge-configuration
+    kind: BridgeConfiguration
+    listKind: BridgeConfigurationList
+    shortNames:
+    - br-config
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        description: BridgeConfiguration is the schema for bridgeconfiguration API
+        type: object
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: 'BridgeConfiguration spec defines the desired state of a bridge'
+            type: object
+            properties:
+              nodeSelector:
+                description: 'NodeSelector is a selector which must be true for the
+                              bridge to fit on a node. Selector which must match a node''s
+                              labels for the pod to be scheduled on that node. More info:
+                              https://kubernetes.io/docs/concepts/configuration/assign-pod-node/'
+                properties:
+                  matchExpressions:
+                    description: 'matchExpressions is a list of label selector
+                                  requirements. The requirements are ANDed.'
+                    items:
+                      description: 'A label selector requirement is a selector
+                                    that contains values, a key, and an operator that
+                                    relates the key and values.'
+                      properties:
+                        key:
+                          description: 'key is the label key that the selector
+                                        applies to.'
+                          type: string
+                        operator:
+                          description: "operator represents a key's relationship
+                                        to a set of values. Valid operators are In,
+                                        NotIn, Exists and DoesNotExist."
+                          type: string
+                        values:
+                          description: 'values is an array of string values.
+                                        If the operator is In or NotIn, the values array
+                                        must be non-empty. If the operator is Exists
+                                        or DoesNotExist, the values array must be empty.
+                                        This array is replaced during a strategic merge
+                                        patch.'
+                          items:
+                            type: string
+                          type: array
+                      required:
+                        - key
+                        - operator
+                      type: object
+                    type: array
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: "matchLabels is a map of {key,value} pairs.
+                                  A single {key,value} in the matchLabels map is equivalent
+                                  to an element of matchExpressions, whose key field
+                                  is 'key', the operator is 'In', and the values array
+                                  contains only 'value'. The requirements are ANDed."
+                    type: object
+                type: object
+              egressVlanInterfaces:
+                description: 'EgressVlanInterfaces represents egress interfaces of bridge with specific vlan, 
+                              which will be created by bridge-operator'
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      description: 'name represents parent interfaces of vlan interface'
+                      type: string
+                    protocol:
+                      description: 'protocol specifies vlan protocol (802.1q or 802.1ad). default: 802.1q.'
+                      type: string
+                    id:
+                      description: 'id specifies vlan id of given protocol'
+                      type: integer
+                      minimum: 0
+                      maximum: 4095
+              egressInterfaces:
+                description: 'EgressInterfaces represents egress interfaces of bridge'
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      description: 'name represents interface to be added into the bridge'
+                      type: string
+#---
+#apiVersion: apiextensions.k8s.io/v1
+#kind: CustomResourceDefinition
+#metadata:
+#  name: bridge-node-statuses.openshift.io
+#spec:
+#  group: openshift.io
+#  names:
+#    plural: bridge-node-statuses
+#    singular: bridge-node-status
+#    kind: BridgeNodeStatus
+#    listKind: BridgeNodeStatusList
+#    shortNames:
+#    - br-node-status
+#  scope: Cluster
+#  versions:
+#  - name: v1alpha1
+#    served: true
+#    storage: true
+#    schema:
+#      openAPIV3Schema:
+#        description: BridgeNodeStatus is the schema for bridge node status API
+#        type: object
+#        properties:
+#          apiVersion:
+#            description: 'APIVersion defines the versioned schema of this representation
+#              of an object. Servers should convert recognized schemas to the latest
+#              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+#            type: string
+#          kind:
+#            description: 'Kind is a string value representing the REST resource this
+#              object represents. Servers may infer this from the endpoint the client
+#              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+#            type: string
+#          metadata:
+#            type: object
+#          status:
+#            description: 'status represents per node bridge status'
+#            type: object
+#            properties:
+#              bridges:
+#                type: array
+#                items:
+#                  type: object
+#                  properties:
+#                    name:
+#                      type: string
+#                      description: 'name specifies bridge name managed by bridge-operator'
+#                    message:
+#                      type: string
+#                      description: 'message shows status message from bridge-operator'
+#                    lastUpdatedTime:
+#                      type: string
+#                      description: 'lastUpdatedTime represents the last updated time of the message'
+#                      format: date-time
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: bridge-informations.openshift.io
+spec:
+  group: openshift.io
+  names:
+    plural: bridge-informations
+    singular: bridge-information
+    kind: BridgeInformation
+    listKind: BridgeInformationList
+    shortNames:
+    - br-info
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        description: BridgeInformation is the schema for bridge node status API
+        type: object
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          status:
+            description: 'status represents per node bridge status'
+            type: object
+            properties:
+              name:
+                type: string
+                description: 'name specifies bridge name'
+              node:
+                type: string
+                description: 'node specifies node name that runs the bridge'
+              managed:
+                type: boolean
+                description: 'managed specifies whether this bridge is manged by bridge-operator'
+              ports:
+                description: 'ports specifies bridge port managed by bridge-operator'
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: 'name specifies bridge port name, managed by bridge-operator'
+                    managed:
+                      type: boolean
+                      description: 'managed specifies whether this port is manged by bridge-operator'
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: bridge-operator
+rules:
+  - apiGroups: ["openshift.io"]
+    resources:
+      - 'bridge-configurations'
+      - 'bridge-informations'
+    verbs:
+      - '*'
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - list
+      - watch
+      - get
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: bridge-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: bridge-operator
+subjects:
+- kind: ServiceAccount
+  name: bridge-operator
+  namespace: kube-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bridge-operator
+  namespace: kube-system
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: bridge-operator-ds-amd64
+  namespace: kube-system
+  labels:
+    tier: node
+    app: bridge-operator
+    name: bridge-operator
+spec:
+  selector:
+    matchLabels:
+      name: bridge-operator
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        tier: node
+        app: bridge-operator
+        name: bridge-operator
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      tolerations:
+      - operator: Exists
+        effect: NoSchedule
+      serviceAccountName: bridge-operator
+      containers:
+      - name: bridge-operator
+        image: quay.io/s1061123/bridge-operator:latest
+        imagePullPolicy: Always
+        command: ["/usr/bin/bridge-operator-daemon"]
+        #args:
+        #- "--host-prefix=/host"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "80Mi"
+          limits:
+            cpu: "100m"
+            memory: "150Mi"
+        securityContext:
+          privileged: true
+          capabilities:
+            add: ["SYS_ADMIN", "NET_ADMIN"]
+        volumeMounts:
+        - name: host
+          mountPath: /host
+      volumes:
+        - name: host
+          hostPath:
+            path: /
